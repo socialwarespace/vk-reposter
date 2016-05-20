@@ -5,6 +5,9 @@ Django developers settings for conf project.
 # Формула рейтинга постов
 RATING_FORMULA = 's / ((10 * r + l) / t )'
 
+# Максимальный рейтинг при котором объявление обрабатывается
+RATING_LIMIT = 10
+
 # Количество постов запрашиваемое за один запрос (не больше 100)
 # https://vk.com/dev/wall.get
 POST_COUNT = 100

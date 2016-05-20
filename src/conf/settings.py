@@ -130,8 +130,6 @@ MEDIA_ROOT = os.path.join(
 
 BROKER_URL = "redis://localhost:6379/0"
 
-CELERY_APP_NAME = 'vk_reposter'
-
 # Расписание выполнения задач (аналог CRON)
 from celery.schedules import crontab
 # CELERYBEAT_SCHEDULE = {
@@ -144,6 +142,9 @@ from celery.schedules import crontab
 
 # Формула рейтинга постов
 RATING_FORMULA = 's / ((10 * r + l) / t )'
+
+# Максимальный рейтинг при котором объявление обрабатывается
+RATING_LIMIT = 10
 
 # Количество постов запрашиваемое за один запрос (не больше 100)
 # https://vk.com/dev/wall.get

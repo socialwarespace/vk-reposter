@@ -1,3 +1,6 @@
+import hashlib
+from urllib.parse import urlparse
+
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
@@ -8,12 +11,17 @@ class Public(models.Model):
     Модель хранит список пабликов, которые необходимо анализировать
     """
     domain = models.URLField('Адрес паблика', unique=True)
+    subscriber_count = models.IntegerField('Количество подписчиков', default=0)
     last_parse = models.DateTimeField('Время последнего парса',
                                       blank=True, null=True)
 
     class Meta:
         verbose_name = 'Паблик'
         verbose_name_plural = 'Паблики'
+
+    @property
+    def public_name(self):
+        return urlparse(self.domain).path[1:]
 
 
 class Post(models.Model):
@@ -23,6 +31,7 @@ class Post(models.Model):
     public = models.ForeignKey(Public)
     vk_id = models.IntegerField('ID поста вконтакте')
     text = models.TextField('Текст поста')
+    text_md5 = models.SlugField('MD5 сообщения', unique=True)
     like_count = models.IntegerField('Количество лайков')
     repost_count = models.IntegerField('Количество репостов')
     subscriber_count = models.IntegerField('Количество подписчиков группы')
@@ -41,6 +50,8 @@ class Post(models.Model):
             self.publication_time = timezone.make_aware(
                 time, timezone.get_current_timezone()
             )
+
+        self.text_md5 = hashlib.md5(self.text.encode())
 
         super(Post, self).save(**kwargs)
 

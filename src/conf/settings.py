@@ -31,6 +31,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'reposter',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -121,6 +123,31 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(
     os.path.dirname(BASE_DIR), 'public', 'media'
 )
+
+
+# Celery configuration
+# http://docs.celeryproject.org/
+
+BROKER_URL = "redis://localhost:6379/0"
+
+CELERY_APP_NAME = 'vk_reposter'
+
+# Расписание выполнения задач (аналог CRON)
+from celery.schedules import crontab
+# CELERYBEAT_SCHEDULE = {
+#     'send_deadline_notifications': {
+#         'task': 'send_deadline_notifications',
+#         'schedule': crontab(minute='0', hour='12'),
+#     },
+# }
+
+
+# Формула рейтинга постов
+RATING_FORMULA = 's / ((10 * r + l) / t )'
+
+# Количество постов запрашиваемое за один запрос (не больше 100)
+# https://vk.com/dev/wall.get
+POST_COUNT = 100
 
 
 try:

@@ -1,5 +1,5 @@
 import hashlib
-from urllib.parse import urlparse
+from urllib import parse
 
 from django.db import models
 from django.utils import timezone
@@ -21,7 +21,10 @@ class Public(models.Model):
 
     @property
     def public_name(self):
-        return urlparse(self.domain).path[1:]
+        return parse.urlparse(self.domain).path[1:]
+
+    def __str__(self):
+        return self.domain
 
 
 class Post(models.Model):
@@ -43,36 +46,43 @@ class Post(models.Model):
         verbose_name_plural = 'Посты'
         unique_together = ('public', 'vk_id')
 
+    def __init__(self, *args, **kwargs):
+        if kwargs:
+            if isinstance(kwargs['publication_time'], int):
+                # конвертируем timestamp в datetime
+                time = timezone.datetime.fromtimestamp(
+                    kwargs['publication_time']
+                )
+                kwargs['publication_time'] = timezone.make_aware(
+                    time, timezone.get_current_timezone()
+                )
+
+        super(Post, self).__init__(*args, **kwargs)
+
     def save(self, **kwargs):
-        if isinstance(self.publication_time, int):
-            # конвертируем timestamp в datetime
-            time = timezone.datetime.fromtimestamp(self.publication_time)
-            self.publication_time = timezone.make_aware(
-                time, timezone.get_current_timezone()
-            )
-
-        self.text_md5 = hashlib.md5(self.text.encode())
-
+        self.text_md5 = hashlib.md5(self.text.encode()).hexdigest()
         super(Post, self).save(**kwargs)
 
+    @property
     def rating(self):
         """ Возвращает рейтинг для объекта
         :return: integer
         """
-        rating = eval(settings.RATING_FORMULA, {
-            's': self.subscriber_count,
-            'r': self.repost_count,
-            'l': self.like_count,
+        kwargs = {
+            's': self.subscriber_count or 0.001,
+            'r': self.repost_count or 0.001,
+            'l': self.like_count or 0.001,
             't': self.hour_cont_from_publication(),
-        })
+        }
 
-        return rating
+        rating = eval(settings.RATING_FORMULA, kwargs)
+        return int(rating)
 
     def hour_cont_from_publication(self):
         """ Возвращает количество часов с момента публикации.
         Округляет до 1, если меньше 1.
         :return: integer
         """
-        delta = timezone.datetime.now() - self.publication_time
+        delta = timezone.now() - self.publication_time
 
         return int(delta.total_seconds() / 60 / 60) + 1

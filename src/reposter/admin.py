@@ -9,7 +9,9 @@ class PublicAdmin(admin.ModelAdmin):
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ('vk_id', 'public', 'like_count', 'repost_count',
-                    'subscriber_count', 'publication_time', 'is_repost')
+                    'subscriber_count', 'publication_time', 'is_repost',
+                    'rating')
+    readonly_fields = ('rating', )
     search_fields = ('vk_id', )
 
 

@@ -14,7 +14,7 @@ class VkApi(object):
     def get_authorized_api(self):
         session = vk.AuthSession(
             app_id=settings.VK_APP_ID, user_login=settings.VK_USER_LOGIN,
-            user_password=settings.VK_USER_PASSOWRD, scope=settings.VK_SCOPE
+            user_password=settings.VK_USER_PASSWORD, scope=settings.VK_SCOPE
         )
 
         return vk.API(session, v=self._api_version)

@@ -1,22 +1,18 @@
 # -- coding: utf-8 --
 """
-Перед инсталяцией необходимо зарегистрировать «Standalone-приложение» Вконтакте
-https://vk.com/editapp?act=create
+ШАБЛОН Настройки приложения VK Reposter.
 
-Затем используем ссылку
-https://oauth.vk.com/authorize?client_id={app_id}&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=wall&response_type=token
-для получения прав доступа на пост на стены.
-
-ВНИМАНИЕ: VK имеет ограничение в 50 репостов в день.
+Необходимо создать файл settings_local.py в текущей директории на основе данного файла.
 """
 
 
 # Настройки VK
-VK_APP_ID = ''
-VK_USER_LOGIN = ''
-VK_USER_PASSOWRD = ''
-VK_SCOPE = ''  # права доступа к аккаунту пользователя
-# https://new.vk.com/dev/permissions
+VK_APP_ID = ''  # ID приложения VK
+VK_USER_LOGIN = ''  # Логин пользователя VK
+VK_USER_PASSWORD = ''  # Пароль пользователя VK
+VK_SCOPE = 'wall'  # права доступа к аккаунту пользователя https://new.vk.com/dev/permissions
+VK_REPOST_MESSAGE = u'Репост'  # Сообщение репоста
+VK_REPOST_TO = ''  # Постить в группу (имя или идентификатор группу)
 
 # Формула рейтинга постов
 VK_RATING_FORMULA = 's / ((10 * r + l) / t )'
@@ -31,12 +27,6 @@ VK_POST_COUNT = 100
 # Таймаут в секундах при обращениях к VK. Если больше 3 запросов в секунду
 # будет ошибка
 VK_API_INTERVAL = 1
-
-# Сообщение репоста
-VK_REPOST_MESSAGE = u'Репост'
-
-# Постить в группу (имя или идентификатор группу)
-VK_REPOST_TO = ''
 
 
 # Расписание выполнения задач (аналог CRON)

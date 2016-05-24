@@ -146,10 +146,10 @@ CELERYBEAT_SCHEDULE = {
 
 
 # Настройки VK
-VK_APP_ID = ''
-VK_USER_LOGIN = ''
-VK_USER_PASSOWRD = ''
-VK_SCOPE = ''  # права доступа к аккаунту пользователя
+VK_APP_ID = ''          # ID приложения VK
+VK_USER_LOGIN = ''      # Логин пользователя VK
+VK_USER_PASSWORD = ''   # Пароль пользователя VK
+VK_SCOPE = 'wall'       # права доступа к аккаунту пользователя
 # https://new.vk.com/dev/permissions
 
 # Формула рейтинга постов
@@ -167,7 +167,7 @@ VK_POST_COUNT = 100
 VK_API_INTERVAL = 1
 
 # Сообщение репоста
-VK_REPOST_MESSAGE = u'Репост'
+VK_REPOST_MESSAGE = u''
 
 # Постить в группу (имя или идентификатор группу)
 VK_REPOST_TO = ''

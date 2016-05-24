@@ -5,9 +5,9 @@ Nginx - для раздачи статики
 
 
 # Запуск сервера разработчика
-source ../env/bin/activate
-python manage.py runserver 0.0.0.0:8000
-celery -A conf.app_celery worker -l info -B
+1. source ../env/bin/activate - активация окружения
+2. python manage.py runserver 0.0.0.0:8000 - запуск веб сервера
+3. celery -A conf.app_celery worker -l info -B - запуск воркеров
 
 
 # Подготовка Вконтакте

@@ -1,23 +1,26 @@
+# -- coding: utf-8 --
 import hashlib
-from urllib import parse
-
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+try:
+    from urllib import parse
+except ImportError:
+    import urlparse as parse
 
 
 class Public(models.Model):
     """
     Модель хранит список пабликов, которые необходимо анализировать
     """
-    domain = models.URLField('Адрес паблика', unique=True)
-    subscriber_count = models.IntegerField('Количество подписчиков', default=0)
-    last_parse = models.DateTimeField('Время последнего парса',
+    domain = models.URLField(u'Адрес паблика', unique=True)
+    subscriber_count = models.IntegerField(u'Количество подписчиков', default=0)
+    last_parse = models.DateTimeField(u'Время последнего парса',
                                       blank=True, null=True)
 
     class Meta:
-        verbose_name = 'Паблик'
-        verbose_name_plural = 'Паблики'
+        verbose_name = u'Паблик'
+        verbose_name_plural = u'Паблики'
 
     @property
     def public_name(self):
@@ -32,18 +35,19 @@ class Post(models.Model):
     Модель хранит посты пабликов
     """
     public = models.ForeignKey(Public)
-    vk_id = models.IntegerField('ID поста вконтакте')
-    text = models.TextField('Текст поста')
-    text_md5 = models.SlugField('MD5 сообщения', unique=True)
-    like_count = models.IntegerField('Количество лайков')
-    repost_count = models.IntegerField('Количество репостов')
-    subscriber_count = models.IntegerField('Количество подписчиков группы')
-    publication_time = models.DateTimeField('Время публикации')
-    is_repost = models.BooleanField('Репост сделан', default=False)
+    vk_id = models.IntegerField(u'ID поста вконтакте')
+    owner_id = models.IntegerField(u'ID владельца поста')
+    text = models.TextField(u'Текст поста')
+    text_md5 = models.SlugField(u'MD5 сообщения', unique=True)
+    like_count = models.IntegerField(u'Количество лайков')
+    repost_count = models.IntegerField(u'Количество репостов')
+    subscriber_count = models.IntegerField(u'Количество подписчиков группы')
+    publication_time = models.DateTimeField(u'Время публикации')
+    is_repost = models.BooleanField(u'Репост сделан', default=False)
 
     class Meta:
-        verbose_name = 'Пост'
-        verbose_name_plural = 'Посты'
+        verbose_name = u'Пост'
+        verbose_name_plural = u'Посты'
         unique_together = ('public', 'vk_id')
 
     def __init__(self, *args, **kwargs):
@@ -75,7 +79,7 @@ class Post(models.Model):
             't': self.hour_cont_from_publication(),
         }
 
-        rating = eval(settings.RATING_FORMULA, kwargs)
+        rating = eval(settings.VK_RATING_FORMULA, kwargs)
         return int(rating)
 
     def hour_cont_from_publication(self):
@@ -86,3 +90,10 @@ class Post(models.Model):
         delta = timezone.now() - self.publication_time
 
         return int(delta.total_seconds() / 60 / 60) + 1
+
+    @property
+    def vk_obj_uri(self):
+        """ Возвращает uri поста вконтакте
+        :return: string
+        """
+        return 'wall{0}_{1}'.format(self.owner_id, self.vk_id)

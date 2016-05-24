@@ -1,3 +1,4 @@
+# -- coding: utf-8 --
 """
 Django settings for conf project.
 """
@@ -132,23 +133,44 @@ BROKER_URL = "redis://localhost:6379/0"
 
 # Расписание выполнения задач (аналог CRON)
 from celery.schedules import crontab
-# CELERYBEAT_SCHEDULE = {
-#     'send_deadline_notifications': {
-#         'task': 'send_deadline_notifications',
-#         'schedule': crontab(minute='0', hour='12'),
-#     },
-# }
+CELERYBEAT_SCHEDULE = {
+    'parse_posts': {
+        'task': 'parse_posts',
+        'schedule': crontab(minute='1', hour='*'),
+    },
+    'repost_posts': {
+        'task': 'repost_posts',
+        'schedule': crontab(minute='3', hour='*'),
+    },
+}
 
+
+# Настройки VK
+VK_APP_ID = ''
+VK_USER_LOGIN = ''
+VK_USER_PASSOWRD = ''
+VK_SCOPE = ''  # права доступа к аккаунту пользователя
+# https://new.vk.com/dev/permissions
 
 # Формула рейтинга постов
-RATING_FORMULA = 's / ((10 * r + l) / t )'
+VK_RATING_FORMULA = 's / ((10 * r + l) / t )'
 
 # Максимальный рейтинг при котором объявление обрабатывается
-RATING_LIMIT = 10
+VK_RATING_LIMIT = 10
 
 # Количество постов запрашиваемое за один запрос (не больше 100)
 # https://vk.com/dev/wall.get
-POST_COUNT = 100
+VK_POST_COUNT = 100
+
+# Таймаут в секундах при обращениях к VK. Если больше 3 запросов в секунду
+# будет ошибка
+VK_API_INTERVAL = 1
+
+# Сообщение репоста
+VK_REPOST_MESSAGE = u'Репост'
+
+# Постить в группу (имя или идентификатор группу)
+VK_REPOST_TO = ''
 
 
 try:

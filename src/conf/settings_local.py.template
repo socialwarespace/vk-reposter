@@ -30,6 +30,7 @@ VK_API_INTERVAL = 1
 
 
 # Расписание выполнения задач (аналог CRON)
+from celery.schedules import crontab
 CELERYBEAT_SCHEDULE = {
     'parse_posts': {
         'task': 'parse_posts',

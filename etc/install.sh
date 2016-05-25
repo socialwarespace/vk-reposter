@@ -12,9 +12,9 @@ PYTHON_VERSION='python3'
 
 sudo apt-get install -y nginx
 sudo apt-get install -y supervisor
-sudo apt-get install -y virtualenv
-sudo apt-get install -y pip
 sudo apt-get install -y git
+sudo apt-get install -y python-pip
+sudo pip install -y virtualenv
 
 mkdir -p $LOG_DIR
 mkdir -p $ENV_DIR

@@ -17,6 +17,8 @@ sudo apt-get install -y git
 sudo apt-get install -y python-pip
 sudo pip install -y virtualenv
 
+rm -rf $LOG_DIR
+rm -rf $ENV_DIR
 mkdir -p $LOG_DIR
 mkdir -p $ENV_DIR
 

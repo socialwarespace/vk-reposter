@@ -1,22 +1,3 @@
-# Требования
-Python 3
-
-Supervisor - для демонизации gunicorn
-
-Nginx - для раздачи статики
-
-Redis - Необходим для управления задачами Celery
-
-
-# Запуск сервера
-Для запуска сервера используется [Supervisor](http://supervisord.org/).
-При старте сервера демон супервизора автоматически запустит необходимые процессы.
-
-```sudo supervisorctl status - отображает состояние процессов```
-
-```sudo supervisorctl restart reposter: - рестартует проект```
-
-
 # Настройка приложения
 
 ## Подготовка Вконтакте
@@ -49,3 +30,27 @@ https://oauth.vk.com/authorize?client_id={APP_ID}&display=page&redirect_uri=http
 Паблики для парса необходимо добавлять в разделе [Паблики](http://grigory.keeper.fvds.ru/reposter/public/)
 
 Спарсенные для репоста посты можно видеть в разделе [Посты](http://grigory.keeper.fvds.ru/reposter/post/)
+
+
+
+# Требования
+Python 3
+
+Supervisor - для демонизации gunicorn
+
+Nginx - для раздачи статики
+
+Redis - Необходим для управления задачами Celery
+
+# Установка проекта
+
+Создание пользователя, необходимые галки
+
+# Запуск сервера
+Для запуска сервера используется [Supervisor](http://supervisord.org/).
+При старте сервера демон супервизора автоматически запустит необходимые процессы.
+
+```sudo supervisorctl status - отображает состояние процессов```
+
+```sudo supervisorctl restart reposter: - рестартует проект```
+

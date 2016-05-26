@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'constance',
+
     'reposter',
 ]
 
@@ -146,18 +148,27 @@ CELERYBEAT_SCHEDULE = {
 }
 
 
+CONSTANCE_BACKEND = 'constance.backends.redisd.RedisBackend'
+CONSTANCE_REDIS_CONNECTION = "redis://localhost:6379/0"
+CONSTANCE_CONFIG = {
+    'VK_APP_ID': ('', u'ID приложения VK'),
+    'VK_USER_LOGIN': ('', u'Логин пользователя VK'),
+    'VK_USER_PASSWORD': ('', u'Пароль пользователя VK'),
+    'VK_REPOST_MESSAGE': (u'Репост', u'Сообщение репоста'),
+    'VK_REPOST_TO': ('', u'Имя или идентификатор группы для постинга'),
+    'VK_RATING_FORMULA': (
+        's / ((10 * r + l) / t )', u'Формула рейтинга постов'
+    ),
+    'VK_RATING_LIMIT': (
+        10, u'Максимальный рейтинг при котором объявление обрабатывается', int
+    ),
+}
+
+
 # Настройки VK
-VK_APP_ID = ''          # ID приложения VK
-VK_USER_LOGIN = ''      # Логин пользователя VK
-VK_USER_PASSWORD = ''   # Пароль пользователя VK
-VK_SCOPE = 'wall'       # права доступа к аккаунту пользователя
-# https://new.vk.com/dev/permissions
 
-# Формула рейтинга постов
-VK_RATING_FORMULA = 's / ((10 * r + l) / t )'
-
-# Максимальный рейтинг при котором объявление обрабатывается
-VK_RATING_LIMIT = 10
+# права доступа к аккаунту пользователя
+VK_SCOPE = 'wall'
 
 # Количество постов запрашиваемое за один запрос (не больше 100)
 # https://vk.com/dev/wall.get
@@ -166,12 +177,6 @@ VK_POST_COUNT = 100
 # Таймаут в секундах при обращениях к VK. Если больше 3 запросов в секунду
 # будет ошибка
 VK_API_INTERVAL = 1
-
-# Сообщение репоста
-VK_REPOST_MESSAGE = u''
-
-# Постить в группу (имя или идентификатор группу)
-VK_REPOST_TO = ''
 
 
 try:

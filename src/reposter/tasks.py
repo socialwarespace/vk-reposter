@@ -3,6 +3,7 @@ import time
 from django.conf import settings
 from django.db import IntegrityError
 from django.utils import timezone
+from constance import config
 
 from vk.exceptions import VkException
 from reposter.vk_api import vk_api
@@ -22,10 +23,10 @@ def repost_posts():
     for post in for_repost:
         kwargs = {
             'object': post.vk_obj_uri,
-            'message': settings.VK_REPOST_MESSAGE,
+            'message': config.VK_REPOST_MESSAGE,
         }
-        if settings.VK_REPOST_TO:
-            kwargs['group_id'] = get_group_id(settings.VK_REPOST_TO)
+        if config.VK_REPOST_TO:
+            kwargs['group_id'] = get_group_id(config.VK_REPOST_TO)
 
         try:
             time.sleep(settings.VK_API_INTERVAL)
@@ -108,7 +109,7 @@ def save_posts_and_check_exist(public, posts):
             publication_time=data['date']
         )
 
-        if post.rating < settings.VK_RATING_LIMIT:
+        if post.rating < config.VK_RATING_LIMIT:
             # пропускаем объявления с слишком высоким рейтингом
             try:
                 Post.objects.get(public=public, vk_id=data['id'])

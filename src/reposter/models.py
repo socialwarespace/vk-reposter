@@ -3,6 +3,7 @@ import hashlib
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from constance import config
 try:
     from urllib import parse
 except ImportError:
@@ -79,7 +80,7 @@ class Post(models.Model):
             't': self.hour_cont_from_publication(),
         }
 
-        rating = eval(settings.VK_RATING_FORMULA, kwargs)
+        rating = eval(config.VK_RATING_FORMULA, kwargs)
         return int(rating)
 
     def hour_cont_from_publication(self):
@@ -97,3 +98,10 @@ class Post(models.Model):
         :return: string
         """
         return 'wall{0}_{1}'.format(self.owner_id, self.vk_id)
+
+    @property
+    def post_url(self):
+        """ Возвращает url адрес поста
+        :return: string
+        """
+        return 'https://vk.com/{0}'.format(self.vk_obj_uri)

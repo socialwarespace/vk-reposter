@@ -6,29 +6,6 @@
 """
 
 
-# Настройки VK
-VK_APP_ID = ''  # ID приложения VK
-VK_USER_LOGIN = ''  # Логин пользователя VK
-VK_USER_PASSWORD = ''  # Пароль пользователя VK
-VK_SCOPE = 'wall'  # права доступа к аккаунту пользователя https://new.vk.com/dev/permissions
-VK_REPOST_MESSAGE = u'Репост'  # Сообщение репоста
-VK_REPOST_TO = ''  # Постить в группу (имя или идентификатор группу)
-
-# Формула рейтинга постов
-VK_RATING_FORMULA = 's / ((10 * r + l) / t )'
-
-# Максимальный рейтинг при котором объявление обрабатывается
-VK_RATING_LIMIT = 10
-
-# Количество постов запрашиваемое за один запрос (не больше 100)
-# https://vk.com/dev/wall.get
-VK_POST_COUNT = 100
-
-# Таймаут в секундах при обращениях к VK. Если больше 3 запросов в секунду
-# будет ошибка
-VK_API_INTERVAL = 1
-
-
 # Расписание выполнения задач (аналог CRON)
 from celery.schedules import crontab
 CELERYBEAT_SCHEDULE = {

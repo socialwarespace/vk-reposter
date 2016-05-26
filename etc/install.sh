@@ -28,6 +28,7 @@ pip install -r requirements.txt
 
 # init project
 cd $PROJECT_SRC
+rm db.sqlite3
 python manage.py migrate
 python manage.py collectstatic
 python manage.py createsuperuser

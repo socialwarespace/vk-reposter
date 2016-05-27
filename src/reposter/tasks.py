@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import IntegrityError
 from django.utils import timezone
 from constance import config
+from celery.utils.log import get_task_logger
 
 from vk.exceptions import VkException
 from reposter.vk_api import vk_api
@@ -34,7 +35,14 @@ def repost_posts():
         except VkException:
             time.sleep(settings.VK_API_INTERVAL * 60)
             auth_api = vk_api.get_authorized_api()
-            auth_api.wall.repost(**kwargs)
+            try:
+                auth_api.wall.repost(**kwargs)
+            except VkException:
+                logger = get_task_logger(__name__)
+                logger.info(
+                    u'Превышен лимит на количество репостов (50 в день)'
+                )
+                return
 
         post.is_repost = True
         post.save()

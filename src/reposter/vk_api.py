@@ -12,6 +12,8 @@ class VkApi(object):
         if settings.DEBUG:
             vk.logger.setLevel(logging.DEBUG)
 
+        super(VkApi, self).__init__()
+
     def get_authorized_api(self):
         session = vk.AuthSession(
             app_id=config.VK_APP_ID, user_login=config.VK_USER_LOGIN,

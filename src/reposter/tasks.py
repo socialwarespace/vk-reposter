@@ -1,25 +1,40 @@
 # -- coding: utf-8 --
 import time
+
+from celery.utils.log import get_task_logger
+from constance import config
 from django.conf import settings
 from django.db import IntegrityError
 from django.utils import timezone
-from constance import config
-from celery.utils.log import get_task_logger
-
 from vk.exceptions import VkException
-from reposter.vk_api import vk_api
 
 from conf.app_celery import app
+from reposter.helpers import get_post_obsolete_date, get_group_id
 from reposter.models import Post, Public
-
+from reposter.vk_api import vk_api
 
 api = vk_api.get_api()
 
 
 @app.task(name='repost_posts')
 def repost_posts():
-    for_repost = Post.objects.filter(is_repost=False).order_by('vk_id')
+    """ Репост записей на стену
+    :return:
+    """
     auth_api = vk_api.get_authorized_api()
+
+    # выбираем одну случайную запись для репоста, но не из группы,
+    # которой постили в прошлый раз
+    for_repost = Post.objects.filter(
+        is_repost=False, publication_time__gte=get_post_obsolete_date()
+    )
+    try:
+        last_repost = Post.objects.filter(is_repost=True).latest('repost_time')
+    except Post.DoesNotExist:
+        pass
+    else:
+        for_repost.exclude(public=last_repost.public)
+    for_repost = [for_repost.order_by('?').first()]
 
     for post in for_repost:
         kwargs = {
@@ -45,12 +60,8 @@ def repost_posts():
                 return
 
         post.is_repost = True
+        post.repost_time = timezone.now()
         post.save()
-
-
-def get_group_id(group_name_or_id):
-    group = api.groups.getById(group_id=group_name_or_id)[0]
-    return group['id']
 
 
 @app.task(name='parse_posts')
@@ -104,7 +115,8 @@ def save_posts_and_check_exist(public, posts):
     :param posts: посты
     :return: bool нашли уже сохранённый пост
     """
-    parsed_all_post = False
+    saved_post_count = 0
+
     for data in posts:
         post = Post(
             public=public,
@@ -117,18 +129,17 @@ def save_posts_and_check_exist(public, posts):
             publication_time=data['date']
         )
 
+        if post.publication_time < get_post_obsolete_date():
+            # не обрабатываем посты с датой публикации больше суток
+            continue
+
         if post.rating < config.VK_RATING_LIMIT:
             # пропускаем объявления с слишком высоким рейтингом
             try:
-                Post.objects.get(public=public, vk_id=data['id'])
-                # api возвращает объекты по порядку, если объект уже сохранён
-                # в БД - дошли до последнего значит дальше пойдут уже
-                # сохранённые объекты
-                parsed_all_post = True
-            except Post.DoesNotExist:
-                try:
-                    post.save()
-                except IntegrityError:
-                    pass
+                post.save()
+                saved_post_count += 1
+            except IntegrityError:
+                continue
 
+    parsed_all_post = not bool(saved_post_count)
     return parsed_all_post

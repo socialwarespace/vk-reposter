@@ -139,11 +139,11 @@ from celery.schedules import crontab
 CELERYBEAT_SCHEDULE = {
     'parse_posts': {
         'task': 'parse_posts',
-        'schedule': crontab(minute='1', hour='*'),
+        'schedule': crontab(minute='0', hour='*'),
     },
     'repost_posts': {
         'task': 'repost_posts',
-        'schedule': crontab(minute='3', hour='*'),
+        'schedule': crontab(minute='5,35', hour='*'),
     },
 }
 
@@ -161,6 +161,10 @@ CONSTANCE_CONFIG = {
     ),
     'VK_RATING_LIMIT': (
         10, u'Максимальный рейтинг при котором объявление обрабатывается', int
+    ),
+    'VK_POST_OBSOLETE': (
+        24, u'Количество часов, после которого посты считаются устаревшими',
+        int
     ),
 }
 

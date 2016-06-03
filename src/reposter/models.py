@@ -43,13 +43,15 @@ class Post(models.Model):
     like_count = models.IntegerField(u'Количество лайков')
     repost_count = models.IntegerField(u'Количество репостов')
     subscriber_count = models.IntegerField(u'Количество подписчиков группы')
-    publication_time = models.DateTimeField(u'Время публикации')
+    publication_time = models.DateTimeField(u'Время публикации', db_index=True)
     is_repost = models.BooleanField(u'Репост сделан', default=False)
+    repost_time = models.DateTimeField(u'Время репоста', blank=True, null=True)
 
     class Meta:
         verbose_name = u'Пост'
         verbose_name_plural = u'Посты'
         unique_together = ('public', 'vk_id')
+        ordering = ('-publication_time', )
 
     def __init__(self, *args, **kwargs):
         if kwargs:

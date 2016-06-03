@@ -15,6 +15,6 @@ CELERYBEAT_SCHEDULE = {
     },
     'repost_posts': {
         'task': 'repost_posts',
-        'schedule': crontab(minute='10', hour='*'),
+        'schedule': crontab(minute='5,35', hour='*'),
     },
 }

@@ -34,8 +34,20 @@ def repost_posts():
         pass
     else:
         for_repost.exclude(public=last_repost.public)
-    for_repost = [for_repost.order_by('?').first()]
 
+    try:
+        for_repost = for_repost.order_by('?').first()
+    except Post.DoesNotExist:
+        # если парсим только один паблик, exclude последнего исключит все
+        # берём посты без исключения последнего паблика из которого репостили
+        for_repost = Post.objects.filter(
+            is_repost=False, publication_time__gte=get_post_obsolete_date()
+        ).order_by('?').first()
+
+    if not for_repost:
+        return
+
+    for_repost = [for_repost]
     for post in for_repost:
         kwargs = {
             'object': post.vk_obj_uri,

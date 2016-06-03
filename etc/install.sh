@@ -10,27 +10,27 @@ ENV_DIR="$PROJECT_ROOT/../env"
 PROJECT_SRC="$PROJECT_ROOT/src"
 PYTHON_VERSION='python3'
 
-sudo apt-get install -y nginx
-sudo apt-get install -y supervisor
-sudo apt-get install -y redis-server
-sudo apt-get install -y git
-sudo apt-get install -y python-pip
-sudo pip install -y virtualenv
-
+echo "PREPARE PROJECT DIRECTORY"
 rm -rf $LOG_DIR
 rm -rf $ENV_DIR
 mkdir -p $LOG_DIR
 mkdir -p $ENV_DIR
 
-# create env and install requirements
+echo "CREATE ENVIRONMENT"
 cd $PROJECT_ROOT
 virtualenv -p $PYTHON_VERSION $ENV_DIR
 source $ENV_DIR/bin/activate
+
+echo "INSTALL REQUIREMENTS"
 pip install -r requirements.txt
 
-# init project
+echo "INITIAL PROJECT"
 cd $PROJECT_SRC
 rm db.sqlite3
 python manage.py migrate
-python manage.py collectstatic
+echo "yes" | python manage.py collectstatic
+
+echo "CREATE ADMIN USER"
 python manage.py createsuperuser
+
+echo "INSTALLATION SUCCESSFULLY COMPLETED"

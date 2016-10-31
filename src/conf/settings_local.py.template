@@ -5,6 +5,10 @@
 Необходимо создать файл settings_local.py в текущей директории на основе данного файла.
 """
 
+# настройки подключения к Redis, должен быть уникальным у каждого инстанса,
+# иначе будут конфликты при работе
+BROKER_URL = "redis://localhost:6379/{НОМЕР ИНСТАНСА}"
+CONSTANCE_REDIS_CONNECTION = BROKER_URL
 
 # Расписание выполнения задач (аналог CRON)
 from celery.schedules import crontab
